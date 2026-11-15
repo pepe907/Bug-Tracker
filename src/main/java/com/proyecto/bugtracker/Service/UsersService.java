@@ -6,6 +6,8 @@ import com.proyecto.bugtracker.Repository.UsersRepository;
 import com.proyecto.bugtracker.entity.Rol;
 import com.proyecto.bugtracker.entity.Users;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ public class UsersService {
 
     private final UsersRepository usersRepository;
     private final RolRepository rolRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public List<Users> ver(){
@@ -35,9 +38,11 @@ public class UsersService {
         Rol rol = rolRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
+        String passwordHash = passwordEncoder.encode(usersRequest.getPassword());
+
         Users user = Users.builder()
                 .email(usersRequest.getEmail())
-                .password(usersRequest.getPassword())
+                .password(passwordHash)
                 .build();
 
         user.addRol(rol);
