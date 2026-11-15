@@ -1,0 +1,49 @@
+create table rol(
+id_rol INT generated always as identity,
+name VARCHAR(100) not null,
+constraint  pk_id_rol primary KEY (id_rol)
+);
+
+create table users_roles(
+id_usersroles int generated always as identity,
+id_rol not null,
+id_users not null,
+constraint pk_id_usersroles primary key (id_usersroles),
+constraint fk_id_rol foreign key (id_rol) references rol (id_rol),
+constraint fk_id_users foreign key (id_users) references users (id_users)
+);
+
+create table users (
+id_users INT generated always as identity,
+id_rol INT not null,
+email VARCHAR(150) not null,
+password VARCHAR(150) not null,
+constraint pk_id_users primary key (id_users),
+constraint fk_id_rol foreign key (id_rol) references rol (id_rol),
+constraint unique_email unique (email)
+);
+
+
+create table project(
+id_project INT generated always as identity,
+id_users INT not null,
+name VARCHAR(150) not null,
+description VARCHAR(250) not null,
+state VARCHAR(150) not null,
+start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+constraint pk_id_project primary key (id_project),
+constraint fk_id_users foreign key (id_users) references users (id_users)
+);
+
+create table incident(
+id_incident INT generated always as identity,
+id_project INT not null,
+id_users INT not null,
+name VARCHAR(150) not null,
+description VARCHAR(250) not null,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+state VARCHAR(150) not null,
+constraint pk_incident primary key (id_incident),
+constraint fk_id_users foreign key (id_users) references users (id_users),
+constraint fk_id_project foreign key (id_project) references project (id_project)
+);
